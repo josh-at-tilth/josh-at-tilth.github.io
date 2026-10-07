@@ -646,7 +646,26 @@
     lines.push(`Payment before Jan 1: ${o.paid ? 'Yes' : 'No'}`);
     lines.push(`Material received before Jan 1: ${o.shipped ? 'Yes' : 'No'}`);
     lines.push(`Estimated material total: ${usd.format(o.net)} (${pct(o.disc)} off list)`);
-    return `Hi Tilth,\n\nI wanted a freight quote for this presale order\n${lines.join('\n')}\n I can unload a semi -OR - I'll need: a lift-gate / appointment / limited-access truck.\nand my shipping address is: ______ \nThanks!\n`;
+    return [
+      'Hi Tilth,',
+      '',
+      'I wanted a freight quote for this presale order',
+      ...lines,
+      '',
+      'My shipping address is [your address here] and',
+      '[ ] I can unload a semi with forks',
+      '[ ] I need a lift-gate / appointment / limited-access truck / other',
+      '',
+      'I am buying:',
+      '[ ] as part of an existing group',
+      '[ ] as part of an evolving group',
+      '[ ] solo',
+      '',
+      'Thanks!',
+      '[your name here]',
+      '[your favorite color here -- just kidding]',
+      ''
+    ].join('\n');
   }
 
   async function copyText(text) {
