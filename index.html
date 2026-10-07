@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Tilth Farmer Pre-Sale Calculator</title>
+<title>Tilth Soil – Potting Mix Pre-Sale</title>
 <style>
   :root {
     --paper: #FFFFFF;
@@ -15,10 +15,13 @@
     --leaf-soft: #DCE6D3;
     --focus: #3E6A33;
     --shadow: 0 .0625rem .125rem rgba(42, 36, 29, .06), 0 .375rem 1.125rem rgba(42, 36, 29, .10);
+    --receipt-shadow: drop-shadow(0 .0625rem .0625rem rgba(42, 36, 29, .14)) drop-shadow(0 .125rem .25rem rgba(42, 36, 29, .08));
     --panel: rgba(62, 106, 51, .06);
     --pill: #E8F4BC;
     --pill-ink: #2F5A22;
     --pill-rule: #C6DD7E;
+    --cap-bg: #4F4B45;
+    --cap-ink: #FFFFFF;
     box-sizing: border-box;
     padding-top: env(safe-area-inset-top, 0rem);
     padding-bottom: env(safe-area-inset-bottom, 0rem);
@@ -35,10 +38,13 @@
       --leaf-soft: #2F3A28;
       --focus: #93BD7F;
     --shadow: 0 .0625rem .125rem rgba(0, 0, 0, .30), 0 .375rem 1.125rem rgba(0, 0, 0, .35);
+    --receipt-shadow: drop-shadow(0 .0625rem .0625rem rgba(0, 0, 0, .45)) drop-shadow(0 .125rem .25rem rgba(0, 0, 0, .35));
     --panel: rgba(147, 189, 127, .08);
     --pill: #3A4721;
     --pill-ink: #D6EBA2;
     --pill-rule: #5A7030;
+    --cap-bg: #6B675E;
+    --cap-ink: #F4F1EA;
       color-scheme: dark;
     }
   }
@@ -52,10 +58,13 @@
     --leaf-soft: #2F3A28;
     --focus: #93BD7F;
     --shadow: 0 .0625rem .125rem rgba(0, 0, 0, .30), 0 .375rem 1.125rem rgba(0, 0, 0, .35);
+    --receipt-shadow: drop-shadow(0 .0625rem .0625rem rgba(0, 0, 0, .45)) drop-shadow(0 .125rem .25rem rgba(0, 0, 0, .35));
     --panel: rgba(147, 189, 127, .08);
     --pill: #3A4721;
     --pill-ink: #D6EBA2;
     --pill-rule: #5A7030;
+    --cap-bg: #6B675E;
+    --cap-ink: #F4F1EA;
     color-scheme: dark;
   }
   *, *::before, *::after { box-sizing: inherit; }
@@ -70,10 +79,27 @@
     font-variant-numeric: tabular-nums;
     -webkit-font-smoothing: antialiased;
   }
+  /* Banner photo at the top of the page; the card overlaps its lower part and both scroll together */
+  .banner {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 38vh;
+    background: var(--pill-ink) center 40% / cover no-repeat;
+    z-index: 0;
+  }
   .wrap {
+    position: relative;
+    z-index: 1;
     max-width: 62rem;
-    margin: 0 auto;
-    padding: clamp(1rem, 3.2vw, 2.4rem) clamp(1rem, 4vw, 2.5rem) 2.4rem;
+    margin: 30vh auto 0;
+    padding: clamp(1.25rem, 3.6vw, 2.6rem) clamp(1rem, 4vw, 2.5rem) 2.4rem;
+    background: var(--paper);
+    border-radius: .5rem .5rem 0 0;
+    box-shadow: 0 -.25rem 1.25rem rgba(0, 0, 0, .14);
+  }
+  @media (min-width: 47.5rem) {
+    .banner { height: 50vh; }
+    .wrap { margin-top: 38vh; }
   }
   header { margin-bottom: clamp(1.2rem, 3.2vw, 2rem); }
   .brand {
@@ -90,6 +116,17 @@
     line-height: 1.02;
     letter-spacing: -0.01em;
   }
+  .intro { margin: .9rem 0 0; max-width: 40rem; }
+  .intro p { margin: 0 0 .5rem; }
+  .intro p:last-child { margin-bottom: 0; }
+  .intro a {
+    color: var(--leaf);
+    font-weight: 600;
+    text-decoration-thickness: .0625rem;
+    text-underline-offset: .15em;
+  }
+  .intro a:hover { text-decoration-thickness: .125rem; }
+  .intro a:focus-visible { outline: .1875rem solid var(--focus); outline-offset: .125rem; border-radius: .125rem; }
   .season {
     margin: .4rem 0 0;
     color: var(--muted);
@@ -99,12 +136,12 @@
   [hidden] { display: none !important; }
 
   /* Truckload deals: one card, each deal a checkbox label */
-  .deals { margin: 0 0 clamp(1.4rem, 3.2vw, 2.2rem); }
-  .deals-head {
+  /* Section tab header: lime tab sitting on a full-width rule */
+  .tab-head {
     margin: 0 0 .55rem;
     border-bottom: .09375rem solid var(--pill-rule);
   }
-  .deals h2 {
+  .tab {
     display: inline-block;
     vertical-align: bottom;
     margin: 0;
@@ -117,12 +154,8 @@
     text-transform: uppercase;
     letter-spacing: .005rem;
   }
-  .section-h { margin: 0 0 .6rem; font-size: 1.21rem; font-weight: 700; }
   .sr-only { position: absolute; width: .0625rem; height: .0625rem; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-  .deal-grid { display: grid; gap: .58rem .72rem; }
-  @media (min-width: 40rem) {
-    .deal-grid { grid-template-columns: 1fr 1fr; }
-  }
+  .deal-grid { display: grid; gap: .58rem; }
   .deal {
     display: grid;
     grid-template-columns: auto 1fr;
@@ -154,8 +187,74 @@
     padding-top: .2rem;
   }
   .deal .offer strong { color: var(--leaf); font-weight: 800; font-size: .8rem; }
+  .deal .rate-wrap { display: inline-flex; align-items: center; gap: .4rem; white-space: nowrap; }
+  .deal .cap {
+    padding: .08rem .45rem .1rem;
+    border-radius: 999rem;
+    background: var(--cap-bg);
+    color: var(--cap-ink);
+    font-size: .64rem;
+    font-style: italic;
+    font-weight: 600;
+  }
   .deal .rate { color: color-mix(in srgb, var(--muted) 70%, var(--ink)); white-space: nowrap; font-weight: 600; }
 
+  .note-box {
+    max-width: 40rem;
+    padding: .3rem .7rem;
+    border-left: .25rem solid var(--pill-ink);
+    font-size: .8rem;
+    color: var(--pill-ink);
+  }
+  .freight-note { margin: .9rem 0 0; }
+  .product-note { margin: .75rem 0 0; }
+  /* Next Steps: left column on desktop, after the receipt on phones */
+  .next-steps { min-width: 0; margin: 1.25rem 0 6rem; }
+  .page-end { margin: 0; text-align: center; font-size: .72rem; font-style: italic; color: var(--muted); }
+  .step-grid { display: grid; gap: 1.4rem 2rem; }
+  .step {
+    display: flex;
+    flex-direction: column;
+    padding: .3rem 0 0;
+  }
+  .step h3 { margin: 0 0 .3rem; font-size: 1rem; font-weight: 800; }
+  .step p { margin: 0 0 .6rem; font-size: .76rem; line-height: 1.5; color: color-mix(in srgb, var(--muted) 70%, var(--ink)); }
+  .step a:not(.btn) { color: var(--leaf); font-weight: 700; text-underline-offset: .15em; }
+  .step a:not(.btn):focus-visible { outline: .1875rem solid var(--focus); outline-offset: .125rem; }
+  .step .btn { flex: none; display: flex; width: 100%; margin-top: auto; }
+  .btn {
+    flex: 1 1 100%;
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: .55rem .9rem;
+    border: .125rem solid var(--pill-ink);
+    border-radius: .25rem;
+    font: inherit;
+    font-size: .8rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .btn:focus-visible { outline: .1875rem solid var(--focus); outline-offset: .125rem; }
+  .btn-primary { background: var(--pill-ink); color: var(--card); }
+  .btn-primary:hover { background: color-mix(in srgb, var(--pill-ink) 85%, var(--ink)); }
+  .btn-primary:disabled { opacity: .4; cursor: not-allowed; }
+  .btn-secondary { background: transparent; color: var(--pill-ink); }
+  .btn-secondary:hover { background: var(--panel); }
+  .copy-fallback { margin: .7rem 0 0; font-size: .76rem; }
+  .copy-fallback label { display: block; margin-bottom: .3rem; color: var(--muted); }
+  .copy-fallback textarea {
+    width: 100%;
+    font: inherit;
+    font-size: .76rem;
+    color: var(--ink);
+    background: var(--card);
+    border: .125rem solid var(--rule);
+    border-radius: .25rem;
+    padding: .5rem;
+    resize: vertical;
+  }
   .perk-line { margin: .36rem 0 0; color: var(--leaf); font-weight: 600; font-size: 0.76rem; }
 
   .grid {
@@ -164,7 +263,16 @@
     align-items: start;
   }
   @media (min-width: 47.5rem) {
-    .grid { grid-template-columns: 1fr 1.05fr; }
+    .grid {
+      grid-template-columns: 3fr 2fr;
+      grid-template-areas: "deals receipt" "inputs receipt" "next next";
+      grid-template-rows: auto 1fr auto;
+    }
+    .grid > .deals { grid-area: deals; }
+    .grid > .order { grid-area: inputs; }
+    .grid > .receipt-wrap { grid-area: receipt; }
+    .grid > .next-steps { grid-area: next; }
+    .step-grid { grid-template-columns: 1fr 1fr; }
   }
 
   /* Inputs */
@@ -184,6 +292,7 @@
     border-top: .0625rem solid var(--rule);
   }
   .qty:last-child { border-bottom: .0625rem solid var(--rule); }
+  .qty:first-of-type { border-top: 0; padding-top: .3rem; }
   .qty label { font-weight: 600; }
   .qty .sub { display: block; font-weight: 400; color: var(--muted); font-size: 0.72rem; }
   .field {
@@ -241,50 +350,67 @@
     margin: 1rem 0 0;
   }
 
-  /* Results label */
+  /* Readout, styled as a receipt */
+  .receipt-wrap { filter: var(--receipt-shadow); }
   .label {
+    --tooth: .45rem;
+    --teeth-top: conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / calc(2 * var(--tooth)) var(--tooth) repeat-x;
+    --body: linear-gradient(#000 0 0) 50% 50% / 100% calc(100% - 2 * var(--tooth) + .125rem) no-repeat;
+    --teeth-bottom: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / calc(2 * var(--tooth)) var(--tooth) repeat-x;
     background: var(--card);
-    border: .125rem solid var(--rule);
-    border-radius: .25rem;
-    box-shadow: var(--shadow);
-    padding: 1.6rem 1.15rem 1.76rem;
+    padding: calc(1.4rem + var(--tooth)) 1.15rem calc(1.4rem + var(--tooth));
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: .76rem;
+    -webkit-mask: var(--teeth-top), var(--body), var(--teeth-bottom);
+    mask: var(--teeth-top), var(--body), var(--teeth-bottom);
   }
-  .label h2 {
+  .r-head {
     margin: 0;
-    font-size: 0.8rem;
+    font-size: .64rem;
     font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
   }
   .total {
-    margin: .16rem 0 0;
-    font-weight: 800;
-    font-size: clamp(1.84rem, 5.6vw, 2.56rem);
+    margin: .35rem 0 0;
+    font-weight: 500;
+    font-size: clamp(1.7rem, 5vw, 2.3rem);
     line-height: 1.05;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.02em;
     overflow-wrap: anywhere;
   }
-  .meta { margin: .24rem 0 0; color: var(--muted); font-size: 0.76rem; }
-  .bar { height: .125rem; background: var(--rule); margin: .72rem -1.15rem .16rem; }
+  .meta { margin: .3rem 0 0; color: var(--muted); font-size: .72rem; }
+  .label .perk-line { font-size: .72rem; }
+  .label .note-box { font-size: .72rem; }
+  .dash { height: 0; border: 0; border-top: .125rem dashed var(--rule); margin: .9rem 0 .45rem; }
+  .dash.double { border-top: .25rem double var(--rule); }
   .rows { margin: 0; padding: 0; list-style: none; }
   .row {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
     gap: 1rem;
-    padding: .36rem 0;
-    border-bottom: .0625rem solid var(--rule);
+    padding: .16rem 0;
   }
-  .row:last-child { border-bottom: 0; }
-  .row.head { font-weight: 700; border-bottom-color: var(--ink); }
-  .row .v { font-weight: 600; text-align: right; white-space: nowrap; }
-  .row.big .v { font-weight: 800; font-size: 1.08rem; }
-  .row.sum { font-weight: 700; border-top: .125rem solid var(--ink); }
-  .row.dim { color: var(--muted); }
-  .row .note { color: var(--muted); font-weight: 400; font-size: 0.704rem; }
-  .row.save .v { color: var(--leaf); font-weight: 800; font-size: 0.92rem; }
+  .row .v { text-align: right; white-space: nowrap; }
+  .row .note { color: var(--muted); }
+  .row.dim, .row.dim .note { color: color-mix(in srgb, var(--muted) 60%, var(--card)); }
+  .row.head {
+    padding-bottom: .3rem;
+    font-size: .64rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .row.cf .v { font-weight: 700; }
+  .row.grand { padding-top: .25rem; font-weight: 500; font-size: .96rem; text-transform: uppercase; }
+  .row.save { color: var(--leaf); font-weight: 700; }
 
   .hint {
-    margin: .72rem 0 0;
-    font-size: 0.76rem;
+    margin: .3rem 0 0;
+    font-size: .72rem;
     color: var(--ink);
     min-height: 1.4em;
   }
@@ -296,37 +422,44 @@
 </style>
 </head>
 <body>
+<div class="banner" aria-hidden="true" style="background-image: url('https://www.tilthsoil.com/cdn/shop/files/Frost_from_above_1.png?v=1753382425&amp;width=3000');"></div>
 <div class="wrap">
   <header>
-    <h1>Tilth Farmer Pre-Sale Calculator</h1>
+    <h1>Tilth Soil – Potting Mix Pre-Sale</h1>
     <p class="season">2026–27 season</p>
+    <div class="intro">
+      <p>Use this calculator to gauge potting mix costs for the coming season. Discounts are based on how much you need and when we can get it to you. Roll your own deal on yards and packaging, or choose a pre-set CoolDeal&trade;.</p>
+      <p>We encourage growers to check out our <a href="https://www.tilthsoil.com/pages/group-buy-nearby" target="_blank" rel="noopener">group buy form</a> to either join or start a group, order together and get the best price for everyone.</p>
+    </div>
+    <p class="note-box product-note">This calculator is for potting mix. If you&rsquo;re interested in living compost, or compost pre-mixed with amendment, just send us a message and we can walk through options.</p>
   </header>
 
-  <section class="deals" aria-labelledby="deals-h">
-    <div class="deals-head"><h2 id="deals-h">Cool Deals • Paid and Shipped by Jan&nbsp;1</h2></div>
-    <div class="deal-grid">
-      <label class="deal">
-        <input type="checkbox" data-deal="lbt">
-        <span class="body">
-          <span class="title"><span class="name">Little Big Truck</span><span class="sep" aria-hidden="true">•</span><span class="desc">16 yd³ in super sacks</span></span>
-          <span class="perk">Free upgrade for liftgate, appointment, OR limited-access on your delivery</span>
-          <span class="offer"><strong>25% off</strong><span class="rate" id="lbtRate"></span></span>
-        </span>
-      </label>
-      <label class="deal">
-        <input type="checkbox" data-deal="bbt">
-        <span class="body">
-          <span class="title"><span class="name">Big Big Truck</span><span class="sep" aria-hidden="true">•</span><span class="desc">60 yd³ in 48 extra-filled sacks</span></span>
-          <span class="perk">Best material price, with freight spread across a full load</span>
-          <span class="offer"><strong>40% off</strong><span class="rate" id="bbtRate"></span></span>
-        </span>
-      </label>
-    </div>
-  </section>
 
-  <h2 class="section-h" id="order-h">Roll Your Own Deal</h2>
   <div class="grid">
-    <section aria-labelledby="order-h">
+    <section class="deals" aria-labelledby="deals-h">
+      <div class="tab-head"><h2 class="tab" id="deals-h">CoolDeals&trade; • Paid and Shipped by Jan&nbsp;1</h2></div>
+      <div class="deal-grid">
+        <label class="deal">
+          <input type="checkbox" data-deal="lbt">
+          <span class="body">
+            <span class="title"><span class="name">Little Big Truck</span><span class="sep" aria-hidden="true">•</span><span class="desc">16 yd³ in super sacks</span></span>
+            <span class="perk">Add a liftgate, appointment, or limited-access upgrade to your delivery for free.</span>
+            <span class="offer"><strong>25% off</strong><span class="rate-wrap"><span class="cap">Nice!</span><span class="rate" id="lbtRate"></span></span></span>
+          </span>
+        </label>
+        <label class="deal">
+          <input type="checkbox" data-deal="bbt">
+          <span class="body">
+            <span class="title"><span class="name">Big Big Truck</span><span class="sep" aria-hidden="true">•</span><span class="desc">60 yd³ in 48 extra-filled sacks</span></span>
+            <span class="perk">Best material price, with freight spread across a full load</span>
+            <span class="offer"><strong>40% off</strong><span class="rate-wrap"><span class="cap">Woo-eee!</span><span class="rate" id="bbtRate"></span></span></span>
+          </span>
+        </label>
+      </div>
+    </section>
+
+    <section class="order" aria-labelledby="order-h">
+      <div class="tab-head"><h2 class="tab" id="order-h">Roll Your Own • Customize Your Volume and Packaging</h2></div>
 
       <fieldset>
         <legend class="sr-only">How much material?</legend>
@@ -338,7 +471,7 @@
           </div>
         </div>
         <div class="qty">
-          <label for="bag">Bagged - 2cu ft<span class="sub">$392 per cubic yard list</span></label>
+          <label for="bag">Bagged<span class="sub">$392 per cubic yard list</span></label>
           <div class="field">
             <input id="bag" type="number" inputmode="decimal" min="0" step="1" value="" placeholder="0" aria-describedby="bag-unit">
             <span class="unit" id="bag-unit">yd³</span>
@@ -363,34 +496,74 @@
       <p class="fine">Volume discount is based on total yards, sacked and bagged combined. Early discounts add to the volume discount. One cubic yard is 27 cubic feet.</p>
     </section>
 
+    <div class="receipt-wrap">
     <section class="label" aria-labelledby="res-h" aria-live="polite">
-      <h2 id="res-h">Total after discounts</h2>
+      <h2 id="res-h" class="r-head">Pre-Sale Estimate</h2>
       <p class="total" id="total">$0.00</p>
       <p class="meta" id="meta">Enter yards to see your price</p>
-      <p class="perk-line" id="perkLine" hidden></p>
-      <p class="disclaim" id="disclaim">Freight cost not included, varies by location and volume.</p>
-      
-      <div class="bar"></div>
-      <ul class="rows">
-        <li class="row head"><span>Price per cubic foot</span><span class="v"></span></li>
-        <li class="row big" id="sackRow"><span>Sacked</span><span class="v" id="sackCf">$0.00</span></li>
-        <li class="row big" id="bagRow"><span>Bagged</span><span class="v" id="bagCf">$0.00</span></li>
-      </ul>
-
-      <div class="bar thin"></div>
-      <ul class="rows">
-        <li class="row head"><span>Discounts</span><span class="v"></span></li>
-        <li class="row"><span>Volume <span class="note" id="volNote"></span></span><span class="v" id="volPct">0%</span></li>
-        <li class="row" id="paidRow"><span>Payment before Jan 1</span><span class="v" id="paidPct">0%</span></li>
-        <li class="row" id="shipRow"><span>Received before Jan 1</span><span class="v" id="shipPct">0%</span></li>
-        <li class="row" id="dealRow" hidden><span id="dealName"></span><span class="v" id="dealPct"></span></li>
-        <li class="row sum"><span>Total discount</span><span class="v" id="totPct">0%</span></li>
-        <li class="row save"><span>You save</span><span class="v" id="save">$0.00</span></li>
-      </ul>
-
       <p class="hint" id="hint"></p>
+      <p class="perk-line" id="perkLine" hidden></p>
+
+      <hr class="dash">
+      <ul class="rows">
+        <li class="row" id="sackLine"><span>Sacked <span class="note" id="sackQty"></span></span><span class="v" id="sackAmt"></span></li>
+        <li class="row" id="bagLine"><span>Bagged <span class="note" id="bagQty"></span></span><span class="v" id="bagAmt"></span></li>
+      </ul>
+
+      <hr class="dash">
+      <ul class="rows">
+        <li class="row"><span>Subtotal</span><span class="v" id="subtotal"></span></li>
+        <li class="row" id="volRow"><span>Volume discount <span class="note" id="volPct"></span></span><span class="v" id="volAmt"></span></li>
+        <li class="row" id="paidRow"><span>Payment before Jan 1 <span class="note" id="paidPct"></span></span><span class="v" id="paidAmt"></span></li>
+        <li class="row" id="shipRow"><span>Received before Jan 1 <span class="note" id="shipPct"></span></span><span class="v" id="shipAmt"></span></li>
+        <li class="row" id="dealRow" hidden><span><span id="dealName"></span> <span class="note" id="dealPct"></span></span><span class="v" id="dealAmt"></span></li>
+      </ul>
+
+      <hr class="dash">
+      <ul class="rows">
+        <li class="row grand"><span>Total</span><span class="v" id="grand"></span></li>
+        <li class="row save"><span>You save <span class="note" id="totPct"></span></span><span class="v" id="save"></span></li>
+      </ul>
+
+      <hr class="dash double">
+      <ul class="rows">
+        <li class="row head"><span>Price per cubic foot</span></li>
+        <li class="row cf" id="sackRow"><span>Sacked</span><span class="v" id="sackCf"></span></li>
+        <li class="row cf" id="bagRow"><span>Bagged</span><span class="v" id="bagCf"></span></li>
+      </ul>
+
+      <hr class="dash">
+      <p class="note-box freight-note">Freight costs are not included as they vary by location and volume. Reach out and we&rsquo;ll be happy to pull a freight quote.</p>
+    </section>
+    </div>
+
+    <section class="next-steps" aria-labelledby="next-h">
+      <div class="tab-head"><h2 class="tab" id="next-h">Next Steps</h2></div>
+      <div class="step-grid">
+
+      <div class="step">
+        <h3>Call or Email</h3>
+        <p>Check your freight or place an order by clicking to copy your inquiry to your clipboard, then just paste into an email, and send it to <a href="mailto:info@tilthsoil.com">info@tilthsoil.com</a>.</p>
+        <button type="button" class="btn btn-primary" id="copyBtn">Copy Order Inquiry</button>
+        <p class="sr-only" id="copyStatus" aria-live="polite"></p>
+        <div class="copy-fallback" id="copyFallback" hidden>
+          <label for="inquiryText">Your browser blocked copying. Select this message and copy it:</label>
+          <textarea id="inquiryText" rows="10" readonly></textarea>
+        </div>
+      </div>
+
+      <div class="step">
+        <h3>Save with a Group</h3>
+        <p>Use our Group Buy form to build a list of nearby growers and get a better rate. We&rsquo;ll help make things easy, from sorting out who wants what, to delivery logistics and invoicing.</p>
+        <a class="btn btn-secondary" href="https://www.tilthsoil.com/pages/group-buy-nearby" target="_blank" rel="noopener">Open Group Buy Form</a>
+      </div>
+      </div>
     </section>
   </div>
+
+  <footer>
+    <p class="page-end">If you can read this, you found the bottom of the page</p>
+  </footer>
 </div>
 
 <script>
@@ -408,7 +581,7 @@
   const DEALS = {
     lbt: {
       name: 'Little Big Truck', sack: 16, bag: 0, paid: true, shipped: true, flat: 0.25,
-      perk: 'Includes free liftgate, appointment, or limited-access delivery.'
+      perk: 'Add a liftgate, appointment, or limited-access upgrade to your delivery for free.'
     },
     bbt: {
       name: 'Big Big Truck', sack: 60, bag: 0, paid: true, shipped: true,
@@ -459,6 +632,43 @@
   // Order as it was before a deal was applied, so clearing the deal restores it
   let snapshot = null;
 
+  // Latest order, kept for the inquiry email
+  let order = null;
+
+  function inquiryText() {
+    const o = order;
+    const lines = [];
+    if (o.deal) lines.push(`Deal: ${o.deal.name}`);
+    lines.push(`Sacked: ${yd(o.sack)} yd³`);
+    lines.push(`Bagged: ${yd(o.bag)} yd³`);
+    lines.push(`Payment before Jan 1: ${o.paid ? 'Yes' : 'No'}`);
+    lines.push(`Material received before Jan 1: ${o.shipped ? 'Yes' : 'No'}`);
+    lines.push(`Estimated material total: ${usd.format(o.net)} (${pct(o.disc)} off list)`);
+    return `Hi Tilth,\n\nI wanted a freight quote for this presale order\n${lines.join('\n')}\n\nThanks!\n`;
+  }
+
+  async function copyText(text) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch (e) { /* fall through to the older method */ }
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed'; ta.style.top = '0'; ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand('copy');
+      ta.remove();
+      return ok;
+    } catch (e) {
+      return false;
+    }
+  }
+
   function update() {
     const state = readState();
     const { sack, bag, paid, shipped } = state;
@@ -480,11 +690,11 @@
     $('perkLine').textContent = deal ? deal.perk : '';
     $('dealRow').hidden = bonus <= 0;
     $('dealName').textContent = deal ? `${deal.name} deal` : '';
-    $('dealPct').textContent = pct(bonus);
     const list = sack * PRICE.sack + bag * PRICE.bag;
     const net = list * (1 - disc);
 
     $('total').textContent = usd.format(net);
+    $('grand').textContent = usd.format(net);
     $('meta').textContent = total > 0
       ? `${yd(total)} yd³ total, list price ${usd.format(list)}`
       : 'Enter yards to see your price';
@@ -494,14 +704,35 @@
     $('sackRow').classList.toggle('dim', sack === 0 && total > 0);
     $('bagRow').classList.toggle('dim', bag === 0 && total > 0);
 
-    $('volNote').textContent = total > 0 ? `(${yd(total)} yd³)` : '';
+    // Line items
+    $('sackQty').textContent = `${yd(sack)} yd³ × $${PRICE.sack}`;
+    $('bagQty').textContent = `${yd(bag)} yd³ × $${PRICE.bag}`;
+    $('sackAmt').textContent = usd.format(sack * PRICE.sack);
+    $('bagAmt').textContent = usd.format(bag * PRICE.bag);
+    $('sackLine').classList.toggle('dim', sack === 0);
+    $('bagLine').classList.toggle('dim', bag === 0);
+    $('subtotal').textContent = usd.format(list);
+
+    // Each discount comes off list price
+    const off = rate => rate > 0 ? '−' + usd.format(list * rate) : usd.format(0);
+    const paidRate = paid ? TIMING : 0;
+    const shipRate = shipped ? TIMING : 0;
     $('volPct').textContent = pct(vol);
-    $('paidPct').textContent = pct(paid ? TIMING : 0);
-    $('shipPct').textContent = pct(shipped ? TIMING : 0);
+    $('volAmt').textContent = off(vol);
+    $('paidPct').textContent = pct(paidRate);
+    $('paidAmt').textContent = off(paidRate);
+    $('shipPct').textContent = pct(shipRate);
+    $('shipAmt').textContent = off(shipRate);
+    $('dealPct').textContent = pct(bonus);
+    $('dealAmt').textContent = off(bonus);
+    $('volRow').classList.toggle('dim', vol === 0);
     $('paidRow').classList.toggle('dim', !paid);
     $('shipRow').classList.toggle('dim', !shipped);
     $('totPct').textContent = pct(disc);
     $('save').textContent = usd.format(list - net);
+
+    order = { sack, bag, paid, shipped, total, deal, net, disc, list };
+    $('copyBtn').disabled = total <= 0;
 
     const nt = nextTier(total);
     const hint = $('hint');
@@ -541,6 +772,27 @@
   // Per-cubic-foot price shown on each deal card
   $('lbtRate').textContent = usd.format(PRICE.sack * (1 - DEALS.lbt.flat) / CF_PER_YD) + '/cu ft';
   $('bbtRate').textContent = usd.format(PRICE.sack * (1 - volumeDiscount(DEALS.bbt.sack) - 2 * TIMING) / CF_PER_YD) + '/cu ft';
+
+  const copyBtn = $('copyBtn');
+  const copyLabel = copyBtn.textContent;
+  let copyTimer = null;
+  copyBtn.addEventListener('click', async () => {
+    if (!order || order.total <= 0) return;
+    const text = inquiryText();
+    const ok = await copyText(text);
+    $('copyFallback').hidden = ok;
+    if (ok) {
+      copyBtn.textContent = 'Copied to clipboard';
+      $('copyStatus').textContent = 'Order inquiry copied to clipboard.';
+      clearTimeout(copyTimer);
+      copyTimer = setTimeout(() => { copyBtn.textContent = copyLabel; $('copyStatus').textContent = ''; }, 2500);
+    } else {
+      const ta = $('inquiryText');
+      ta.value = text;
+      ta.focus();
+      ta.select();
+    }
+  });
 
   update();
 </script>
