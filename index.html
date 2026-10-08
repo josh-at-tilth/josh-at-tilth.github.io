@@ -6,7 +6,7 @@
 <title>Tilth Soil – Potting Mix Pre-Sale</title>
 <style>
   :root {
-    --paper: #FFFFFF;
+    --paper: #FAF8F3;
     --card: #FFFFFF;
     --ink: #2A241D;
     --muted: #6B675E;
@@ -30,8 +30,8 @@
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --paper: #1C1A16;
-      --card: #25221D;
+      --paper: #25221D;
+      --card: #2E2B25;
       --ink: #ECE8DF;
       --muted: #A8A397;
       --rule: #47423A;
@@ -51,8 +51,8 @@
     }
   }
   :root[data-theme="dark"] {
-    --paper: #1C1A16;
-    --card: #25221D;
+    --paper: #25221D;
+    --card: #2E2B25;
     --ink: #ECE8DF;
     --muted: #A8A397;
     --rule: #47423A;
@@ -97,6 +97,7 @@
     margin: 30vh auto 0;
     padding: clamp(1.25rem, 3.6vw, 2.6rem) clamp(1rem, 4vw, 2.5rem) 2.4rem;
     background: var(--paper);
+    border-radius: .25rem .25rem 0 0;
     box-shadow: 0 -.25rem 1.25rem rgba(0, 0, 0, .14);
   }
   @media (min-width: 47.5rem) {
@@ -645,7 +646,6 @@
     lines.push(`Bagged: ${yd(o.bag)} yd³`);
     lines.push(`Payment before Jan 1: ${o.paid ? 'Yes' : 'No'}`);
     lines.push(`Material received before Jan 1: ${o.shipped ? 'Yes' : 'No'}`);
-    lines.push(`Estimated material total: ${usd.format(o.net)} (${pct(o.disc)} off list)`);
     return [
       'Hi Tilth,',
       '',
@@ -656,10 +656,10 @@
       '[ ] I can unload a semi with forks',
       '[ ] I need a lift-gate / appointment / limited-access truck / other',
       '',
-      'I am buying:',
-      '[ ] as part of an existing group',
-      '[ ] as part of an evolving group',
-      '[ ] solo',
+      'This order is:',
+      '[ ] for me',
+      '[ ] for a group',
+      "[ ] for me, but I'd like to find a group to buy with",
       '',
       'Thanks!',
       '[your name here]',
